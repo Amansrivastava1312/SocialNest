@@ -5,7 +5,7 @@ import { BsThreeDots } from "react-icons/bs";
 import Actions from "./Actions";
 const UserPost = ({ likes, replies, postImg, postTitle }) => {
   return (
-    <Link>
+    <Link to={"/markzuckerberg/post/1"}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar size={"md"} name="AmanSrivastava" src="/aman.jpeg" />
@@ -48,7 +48,7 @@ const UserPost = ({ likes, replies, postImg, postTitle }) => {
               </Text>
               <Image src="/verified.png" w={4} h={4} ml={1} />
             </Flex>
-            <Flex alignItems={"center"} gap>
+            <Flex alignItems={"center"} gap={3}>
               <Text fontSize={"xs"} color={"gray.light"}>
                 1d
               </Text>

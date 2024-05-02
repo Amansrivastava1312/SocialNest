@@ -1,8 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 
-const Actions = () => {
-  const [liked, setLiked] = useState();
+const Actions = ({ liked, setLiked }) => {
   return (
     <Flex gap={3} my={2} onClick={(e) => e.preventDefault()}>
       <svg
