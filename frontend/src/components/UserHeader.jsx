@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Flex,
   Menu,
   MenuButton,
@@ -15,9 +16,18 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
-const UserHeader = () => {
-  const toast = useToast();
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
+import { Link as RouterLink } from "react-router-dom";
+import useShowToast from "../hooks/useShowToast";
+import useFollowUnfollow from "../hooks/useFollowUnfollow";
 
+const UserHeader = ({ user }) => {
+  const toast = useToast();
+  const currentUser = useRecoilValue(userAtom);
+  // console.log(user);
+  const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
+  const showToast = useShowToast();
   const copyURL = () => {
     const currentURL = window.location.href;
     // console.log(currentURL);
@@ -34,10 +44,10 @@ const UserHeader = () => {
       <Flex justifyContent={"space-between"} w={"full"}>
         <Box>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            Aman Srivastava
+            {user.name}
           </Text>
           <Flex gap={2} alignItems={"center"}>
-            <Text fontSize={"sm"}>Amansrivastava</Text>
+            <Text fontSize={"sm"}>{user.username}</Text>
             <Text
               fontSize={"xs"}
               bg={"gray.dark"}
@@ -50,16 +60,43 @@ const UserHeader = () => {
           </Flex>
         </Box>
         <Box>
-          <Avatar name="Aman Srivastava" src="/aman.jpeg" size={"xl"} />
+          {user.profilePic && (
+            <Avatar
+              name={user.name}
+              src={user.profilePic}
+              size={{
+                base: "md",
+                md: "xl",
+              }}
+            />
+          )}
+          {!user.profilePic && (
+            <Avatar
+              name={user.name}
+              src="https://bit.ly/broken-link"
+              size={{
+                base: "md",
+                md: "xl",
+              }}
+            />
+          )}
         </Box>
       </Flex>
-      <Text fontSize={"md"}>
-        I am a full-stack developer. I love to write about technology and
-        programming.
-      </Text>
+      <Text fontSize={"md"}>{user.bio}</Text>
+      {currentUser?._id === user._id && (
+        <Link as={RouterLink} to="/update">
+          <Button size={"sm"}>Update Profile</Button>
+        </Link>
+      )}
+      {currentUser?._id !== user._id && (
+        <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
+          {following ? "Unfollow" : "Follow"}
+        </Button>
+      )}
+
       <Flex w={"full"} justifyContent={"space-between"}>
         <Flex gap={2} alignItems={"center"}>
-          <Text color={"gray.light"}>3.2k Followers</Text>
+          <Text color={"gray.light"}>{user.followers.length} followers</Text>
           <Box w="1" h="1" bg={"gray.light"} borderRadius={"full"}></Box>
           <Link color={"gray.light"}>SocialNest.com</Link>
         </Flex>
@@ -91,7 +128,7 @@ const UserHeader = () => {
           pb="3"
           cursor={"pointer"}
         >
-          <Text fontWeight={"bold"}> Threads</Text>
+          <Text fontWeight={"bold"}>NestPost</Text>
         </Flex>
         <Flex
           flex={1}
