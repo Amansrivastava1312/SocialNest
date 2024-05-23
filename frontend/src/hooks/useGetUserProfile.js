@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useShowToast from "./useShowToast";
 
@@ -17,6 +17,10 @@ const useGetUserProfile = () => {
           showToast("Error", data.error, "error");
           return;
         }
+        if (data.isFrozen) {
+          setUser(null);
+          return;
+        }
         setUser(data);
       } catch (error) {
         showToast("Error", error.message, "error");
@@ -27,7 +31,7 @@ const useGetUserProfile = () => {
     getUser();
   }, [username, showToast]);
 
-  return { user, loading };
+  return { loading, user };
 };
 
 export default useGetUserProfile;
