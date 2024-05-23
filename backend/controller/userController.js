@@ -18,6 +18,8 @@ export const getUserProfile = async (req, res) => {
       user = await User.findOne({ _id: query })
         .select("-password")
         .select("-updatedAt");
+
+      console.log(user);
     } else {
       // query is username
       user = await User.findOne({ username: query })
