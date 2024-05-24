@@ -4,6 +4,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/helper/generateTokenAndSetCookie.js";
 import { v2 as cloudinary } from "cloudinary";
+import Post from "../models/postModel.js";
 
 export const getUserProfile = async (req, res) => {
   // We will fetch user profile either with username or userId
@@ -180,6 +181,19 @@ export const updateUser = async (req, res) => {
     user.bio = bio || user.bio;
 
     user = await user.save();
+    await Post.updateMany(
+      { "replies.userId": userId },
+      {
+        $set: {
+          "replies.$[reply].username": user.username,
+          "replies.$[reply].userProfilePic": user.profilePic,
+        },
+      },
+      { arrayFilters: [{ "reply.userId": userId }] }
+    );
+
+    // password should be null in response
+    user.password = null;
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
