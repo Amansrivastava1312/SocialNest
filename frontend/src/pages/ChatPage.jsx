@@ -35,7 +35,27 @@ const ChatPage = () => {
   const [searchText, setSearchText] = useState("");
 
   const { socket, onlineUsers } = useSocket();
-  console.log("onlineUsers", typeof onlineUsers, onlineUsers);
+  // console.log("onlineUsers", typeof onlineUsers, onlineUsers);
+
+  useEffect(() => {
+    socket?.on("messagesSeen", ({ conversationId }) => {
+      setConversations((prev) => {
+        const updatedConversations = prev.map((conversation) => {
+          if (conversation._id === conversationId) {
+            return {
+              ...conversation,
+              lastMessage: {
+                ...conversation.lastMessage,
+                seen: true,
+              },
+            };
+          }
+          return conversation;
+        });
+        return updatedConversations;
+      });
+    });
+  }, [socket, setConversations]);
 
   useEffect(() => {
     const getConversations = async () => {

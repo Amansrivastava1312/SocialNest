@@ -9,6 +9,12 @@ const Message = ({ ownMessage, message }) => {
   const selectedConversation = useRecoilValue(selectedConversationAtom);
   const user = useRecoilValue(userAtom);
   const [imgLoaded, setImgLoaded] = useState(false);
+
+  const viewImage = () => {
+    console.log("Image clicked:", message.img);
+    window.open(message.img, "_blank");
+  };
+
   return (
     <>
       {ownMessage ? (
@@ -38,10 +44,11 @@ const Message = ({ ownMessage, message }) => {
               <Skeleton w={"200px"} h={"200px"} />
             </Flex>
           )}
-
           {message.img && imgLoaded && (
             <Flex mt={5} w={"200px"}>
-              <Image src={message.img} alt="Message image" borderRadius={4} />
+              <Box onClick={viewImage} cursor="pointer">
+                <Image src={message.img} alt="Message image" borderRadius={4} />
+              </Box>
               <Box
                 alignSelf={"flex-end"}
                 ml={1}
@@ -52,13 +59,11 @@ const Message = ({ ownMessage, message }) => {
               </Box>
             </Flex>
           )}
-
           <Avatar src={user.profilePic} w="7" h={7} />
         </Flex>
       ) : (
         <Flex gap={2}>
           <Avatar src={selectedConversation.userProfilePic} w="7" h={7} />
-
           {message.text && (
             <Text
               maxW={"350px"}
@@ -82,10 +87,11 @@ const Message = ({ ownMessage, message }) => {
               <Skeleton w={"200px"} h={"200px"} />
             </Flex>
           )}
-
           {message.img && imgLoaded && (
             <Flex mt={5} w={"200px"}>
-              <Image src={message.img} alt="Message image" borderRadius={4} />
+              <Box onClick={viewImage} cursor="pointer">
+                <Image src={message.img} alt="Message image" borderRadius={4} />
+              </Box>
             </Flex>
           )}
         </Flex>
