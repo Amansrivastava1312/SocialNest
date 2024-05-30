@@ -18,6 +18,7 @@ import {
   selectedConversationAtom,
 } from "../atoms/messagesAtom";
 import userAtom from "../atoms/userAtom";
+import { useSocket } from "../context/SocketContext";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
@@ -27,6 +28,35 @@ const MessageContainer = () => {
   const currentUser = useRecoilValue(userAtom);
   const messageEndRef = useRef(null);
   const setConversations = useSetRecoilState(conversationsAtom);
+
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    socket.on("newMessage", (message) => {
+      if (selectedConversation._id === message.conversationId) {
+        setMessages((prev) => [...prev, message]);
+      }
+      setConversations((prev) => {
+        const updatedConversations = prev.map((conversation) => {
+          if (conversation._id === message.conversationId) {
+            return {
+              ...conversation,
+              lastMessage: {
+                text: message.text,
+                sender: message.sender,
+              },
+            };
+          }
+          return conversation;
+        });
+        return updatedConversations;
+      });
+    });
+
+    return () => {
+      socket.off("newMessage");
+    };
+  });
 
   useEffect(() => {
     const getMessages = async () => {
@@ -51,6 +81,11 @@ const MessageContainer = () => {
 
     getMessages();
   }, [showToast, selectedConversation.userId, selectedConversation.mock]);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <Flex
       flex="70"

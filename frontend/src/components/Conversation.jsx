@@ -24,7 +24,7 @@ const Conversation = ({ conversation, isOnline }) => {
   );
   const colorMode = useColorMode();
 
-  console.log("selectedConverstion", selectedConversation);
+  // console.log("selectedConverstion", selectedConversation);
   return (
     <Flex
       gap={4}

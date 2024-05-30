@@ -21,6 +21,8 @@ import {
 } from "../atoms/messagesAtom";
 import { set } from "mongoose";
 import userAtom from "../atoms/userAtom";
+import { useSocket } from "../context/SocketContext";
+// import { on } from "events";
 const ChatPage = () => {
   const showToast = useShowToast();
   const currentUser = useRecoilValue(userAtom);
@@ -31,6 +33,10 @@ const ChatPage = () => {
     selectedConversationAtom
   );
   const [searchText, setSearchText] = useState("");
+
+  const { socket, onlineUsers } = useSocket();
+  console.log("onlineUsers", typeof onlineUsers, onlineUsers);
+
   useEffect(() => {
     const getConversations = async () => {
       try {
@@ -40,7 +46,7 @@ const ChatPage = () => {
           showToast("Error", data.error, "error");
           return;
         }
-        console.log(data);
+        // console.log(data);
         setConversations(data);
       } catch (error) {
         showToast("Error", error.message, "error");
@@ -101,6 +107,7 @@ const ChatPage = () => {
       setSearchingUser(false);
     }
   };
+
   return (
     <Box
       position={"absolute"}
@@ -177,6 +184,9 @@ const ChatPage = () => {
               <Conversation
                 key={conversation._id}
                 conversation={conversation}
+                isOnline={onlineUsers.includes(
+                  conversation.participants[0]._id
+                )}
               />
             ))}
         </Flex>
