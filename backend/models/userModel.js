@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema(
     followers: { type: [String], default: [] },
     following: { type: [String], default: [] },
     bio: { type: String, default: "" },
+    isFrozen: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

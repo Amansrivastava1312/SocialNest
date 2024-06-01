@@ -87,18 +87,20 @@ const CreatePost = () => {
       setLoading(false);
     }
   };
+  const modeCheck = localStorage.getItem("chakra-ui-color-mode");
+  console.log(modeCheck);
 
   return (
     <>
       <Button
-        position={"fixed"}
+        position="fixed"
         bottom={10}
-        right={5}
-        bg={useColorModeValue("gray.300", "gray.dark")}
+        left={10} // Added to position the button in the bottom left corner
+        bg={modeCheck === "light" ? "gray.800" : "gray.200"}
         onClick={onOpen}
-        size={{ base: "sm", sm: "md" }}
+        size="lg" // Set a consistent size for all screen sizes
       >
-        <AddIcon />
+        <AddIcon color={modeCheck === "light" ? "gray.200" : "gray.800"} />
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
