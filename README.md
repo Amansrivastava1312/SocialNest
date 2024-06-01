@@ -3,7 +3,7 @@
 Welcome to My Social Media App! This project is a feature-rich, fully responsive social media platform that allows users to create posts, interact with other users, and more.
 
 ## Features
-
+- 🌟  **Tech stack** : MERN + Socket.io + Chakra UI
 - 🎃 **Authentication & Authorization with JWT**: Secure login and registration system using JSON Web Tokens.
 - 📝 **Create Post**: Users can create new posts and share them with their followers.
 - 🗑️ **Delete Post**: Users can delete their posts if they no longer wish to share them.
