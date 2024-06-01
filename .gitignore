@@ -12,7 +12,34 @@ vendor/
 
 # Ignore compiled files or build outputs
 /build/
+/dist/# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE or editor files
+.idea/
+.vscode/
+
+# Ignore dependency directories
+node_modules/
+vendor/
+
+# Ignore compiled files or build outputs
+/build/
 /dist/
+
+# Ignore environment-specific files
+.env
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore sensitive or private information
+secrets.json
+
+
+
 
 # Ignore environment-specific files
 .env
