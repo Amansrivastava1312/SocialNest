@@ -98,7 +98,7 @@ const CreatePost = () => {
         left={10} // Added to position the button in the bottom left corner
         bg={modeCheck === "light" ? "gray.800" : "gray.200"}
         onClick={onOpen}
-        size="lg" // Set a consistent size for all screen sizes
+        size="md" // Set a consistent size for all screen sizes
       >
         <AddIcon color={modeCheck === "light" ? "gray.200" : "gray.800"} />
       </Button>

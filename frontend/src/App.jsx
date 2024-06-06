@@ -17,6 +17,7 @@ import CreatePost from "./components/CreatePost";
 import SettingsPage from "./pages/SettingsPage";
 import ChatPage from "./pages/ChatPage";
 import Chatbot from "./components/Chatbot";
+
 function App() {
   const user = useRecoilValue(userAtom);
   const { pathname } = useLocation();
@@ -32,6 +33,7 @@ function App() {
             path="/"
             element={user ? <HomePage /> : <Navigate to="/auth" />}
           />
+
           <Route
             path="/auth"
             element={!user ? <AuthPage /> : <Navigate to="/" />}

@@ -13,6 +13,7 @@ import {
   Text,
   useColorModeValue,
   Link,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -27,6 +28,15 @@ export default function SignupCard() {
   const setUser = useSetRecoilState(userAtom);
 
   const showToast = useShowToast();
+
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (email) => {
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    setEmailError(isValid ? "" : "Please enter a valid email address");
+    return isValid;
+  };
+
   const [inputs, setInputs] = useState({
     name: "",
     username: "",
@@ -98,15 +108,17 @@ export default function SignupCard() {
                 </FormControl>
               </Box>
             </HStack>
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={!!emailError}>
               <FormLabel>Email address</FormLabel>
               <Input
                 type="email"
-                onChange={(e) =>
-                  setInputs({ ...inputs, email: e.target.value })
-                }
+                onChange={(e) => {
+                  setInputs({ ...inputs, email: e.target.value });
+                  validateEmail(e.target.value);
+                }}
                 value={inputs.email}
               />
+              <FormErrorMessage>{emailError}</FormErrorMessage>
             </FormControl>
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
@@ -145,6 +157,9 @@ export default function SignupCard() {
               </Button>
             </Stack>
             <Stack pt={6}>
+              <Text align={"center"} textColor={"#3e92ad"}>
+                Enter Valid Email Address to receive OTP while login
+              </Text>
               <Text align={"center"}>
                 Already a user?{" "}
                 <Link

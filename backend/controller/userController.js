@@ -5,7 +5,8 @@ import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/helper/generateTokenAndSetCookie.js";
 import { v2 as cloudinary } from "cloudinary";
 import Post from "../models/postModel.js";
-
+import sendEmail from "../utils/helper/sendEmail.js";
+import OTP from "../models/otpModel.js";
 export const getUserProfile = async (req, res) => {
   // We will fetch user profile either with username or userId
   // query is either username or userId
@@ -75,21 +76,52 @@ export const signupUser = async (req, res) => {
   }
 };
 
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
 export const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-    const isPasswordMatch =
-      user && (await bcrypt.compare(password, user.password));
-    if (!isPasswordMatch || !user) {
-      return res.status(400).json({ error: "Invalid username or password" });
+    if (!user) {
+      return res.status(400).json({ error: "Invalid email or password" });
     }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
+    const otp = generateOTP();
+    await OTP.create({ email, otp });
+
+    await sendEmail(email, "Your OTP Code", `Your OTP code is ${otp}`);
+
+    res.status(200).json({ message: "OTP sent to your email" });
+  } catch (error) {
+    console.error("Error in loginUser:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const verifyOTP = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const otpRecord = await OTP.findOne({ email, otp });
+
+    if (!otpRecord) {
+      return res.status(400).json({ error: "Invalid OTP" });
+    }
+
+    const user = await User.findOne({ email });
 
     if (user.isFrozen) {
       user.isFrozen = false;
     }
     generateTokenAndSetCookie(user._id, res);
+
     res.status(200).json({
       _id: user._id,
       name: user.name,
@@ -100,7 +132,6 @@ export const loginUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
-    console.log("Error in loginUser: ", error.message);
   }
 };
 
